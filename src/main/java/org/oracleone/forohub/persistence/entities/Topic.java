@@ -13,6 +13,7 @@ public class Topic {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "topic_id")
     private Long id;
     private String title;
     private LocalDate creationDate;
