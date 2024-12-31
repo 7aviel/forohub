@@ -1,4 +1,4 @@
-package org.oracleone.forohub.persistence.entities.DTO;
+package org.oracleone.forohub.persistence.DTO;
 
 public record UserDTO(
         String name,

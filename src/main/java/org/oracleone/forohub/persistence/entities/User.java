@@ -1,8 +1,8 @@
 package org.oracleone.forohub.persistence.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.oracleone.forohub.persistence.DTO.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -41,5 +41,10 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return null;
+    }
+
+    public User(UserDTO userDTO){
+        this.name = userDTO.name();
+        this.email = userDTO.email();
     }
 }
