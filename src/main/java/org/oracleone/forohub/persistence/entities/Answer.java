@@ -16,18 +16,14 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "answer_id")
     private Long id;
-    @NotNull
     private String message;
     @ManyToOne
     @JoinColumn(name = "topic_id")
-    @NotNull
     @JsonBackReference
     private Topic topic;
-    @NotBlank
     private LocalDate creationDate;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @NotBlank
     private User author;
     private String solution;
 
@@ -61,5 +57,25 @@ public class Answer {
 
     public String getSolution() {
         return solution;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
     }
 }

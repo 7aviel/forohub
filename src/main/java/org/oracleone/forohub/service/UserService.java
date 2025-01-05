@@ -60,8 +60,14 @@ public class UserService implements EntityConverter<UserDTO, User>{
             throw new EntityNotFoundException("No users found");
         }
         return users.stream().map(
-                u -> new UserDTO(u.getName(),u.getEmail())
+                this::EntityToDTO
         ).collect(Collectors.toList());
+    }
+
+    public User getByNameAndEmail(String name, String email){
+        return this.userRepository.findByNameAndEmail(name,email).orElseThrow(
+                EntityNotFoundException::new
+        );
     }
 
 }

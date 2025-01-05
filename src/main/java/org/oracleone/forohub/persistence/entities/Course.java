@@ -15,10 +15,8 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Long id;
-    @NotBlank
     private String name;
     @Enumerated(value = EnumType.STRING)
-    @NotNull
     private Category categoryEnum;
 
     public Course(String name, Category categoryEnum) {

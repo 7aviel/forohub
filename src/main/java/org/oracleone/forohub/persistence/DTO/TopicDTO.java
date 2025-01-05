@@ -2,6 +2,7 @@ package org.oracleone.forohub.persistence.DTO;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.Enums.Status;
 import org.oracleone.forohub.persistence.entities.Answer;
 import org.oracleone.forohub.persistence.entities.Course;
@@ -14,14 +15,14 @@ import java.util.stream.Collectors;
 public record TopicDTO(
         @NotBlank
         String title,
-        @NotBlank
+        @NotNull
         LocalDate creationDate,
-        @NotBlank
+        @NotNull
         Status status,
-        @NotBlank
+        @NotNull
         @Valid
         UserDTO user,
-        @NotBlank
+        @NotNull
         @Valid
         CourseDTO course,
         List<AnswerDTO> answers

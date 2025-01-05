@@ -15,7 +15,6 @@ public class Perfil {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "perfil_id")
     private Long id;
-    @NotBlank
     private String username;
     @ManyToMany
     @JoinTable(

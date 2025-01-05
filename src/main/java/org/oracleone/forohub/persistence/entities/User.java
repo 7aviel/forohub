@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
 
 import java.util.List;
@@ -12,17 +13,18 @@ import java.util.List;
 @Entity
 @Data
 @AllArgsConstructor
+@Table(
+        name = "user",
+        uniqueConstraints=
+                @UniqueConstraint(columnNames = {"email"})
+)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
-    @NotBlank
     private String name;
-    @NotBlank
-    @Email
     private String email;
-    @NotBlank
     private String password;
     @ManyToMany
     @JoinTable(

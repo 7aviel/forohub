@@ -39,7 +39,7 @@ public class CourseService implements EntityConverter<CourseDTO, Course> {
             throw new EntityNotFoundException("No courses found");
         }
         return courses.stream()
-                .map(course -> new CourseDTO(course.getName(), course.getCategoryEnum()))
+                .map(this::EntityToDTO)
                 .collect(Collectors.toList());
     }
 
@@ -55,4 +55,9 @@ public class CourseService implements EntityConverter<CourseDTO, Course> {
                 courseDTO.category()
         );
     }
+
+    public Course getByName(String name){
+        return this.courseRepository.findByName(name).orElseThrow(()->null);
+    }
+
 }
