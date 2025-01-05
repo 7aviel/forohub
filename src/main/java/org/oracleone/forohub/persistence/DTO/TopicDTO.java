@@ -26,17 +26,4 @@ public record TopicDTO(
         CourseDTO course,
         List<AnswerDTO> answers
 ) {
-        public User userDTOtoUser(){
-                return new User(user);
-        }
-
-        public Course courseDTOtoCourse(){
-                return new Course(course);
-        }
-
-        public List<Answer> answerDTOtoAnswer(){
-                return answers.stream()
-                        .map(Answer::new)
-                        .collect(Collectors.toList());
-        }
 }

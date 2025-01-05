@@ -22,9 +22,9 @@ public class TopicController {
 
     @PostMapping("/topics")
     public ResponseEntity<?> postTopics(@RequestBody @Valid TopicDTO topicDTO){
-        System.out.println(topicDTO.toString());
-        this.topicService.saveTopic(topicDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(topicDTO);
+       /* System.out.println(topicDTO.toString());
+        this.topicService.saveTopic(topicDTO);*/
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
 
 }

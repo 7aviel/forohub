@@ -1,24 +1,28 @@
 package org.oracleone.forohub.persistence.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.oracleone.forohub.persistence.DTO.UserDTO;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
 
-import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
-public class User implements UserDetails {
-
+@Data
+@AllArgsConstructor
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
+    @Email
     private String email;
+    @NotBlank
     private String password;
     @ManyToMany
     @JoinTable(
@@ -28,23 +32,28 @@ public class User implements UserDetails {
     )
     private List<Perfil> perfilList;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
     }
 
-    @Override
-    public String getPassword() {
-        return null;
+    public User(String name, String email) {
+        this.name = name;
+        this.email = email;
     }
 
-    @Override
-    public String getUsername() {
-        return null;
+    public User() {
     }
 
-    public User(UserDTO userDTO){
-        this.name = userDTO.name();
-        this.email = userDTO.email();
+    public String getName() {
+        return name;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+
+
 }

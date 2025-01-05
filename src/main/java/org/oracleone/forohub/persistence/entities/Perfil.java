@@ -2,6 +2,7 @@ package org.oracleone.forohub.persistence.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public class Perfil {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "perfil_id")
     private Long id;
-    private String name;
+    @NotBlank
+    private String username;
     @ManyToMany
     @JoinTable(
             name = "user_perfil",
