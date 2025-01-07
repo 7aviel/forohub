@@ -28,7 +28,7 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AnswerDTO> getAnswerById(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(this.answerService.EntityToDTO(
+        return ResponseEntity.status(HttpStatus.OK).body(this.answerService.convertToDTO(
                 this.answerService.findById(id)
         ));
     }

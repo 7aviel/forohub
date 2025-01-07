@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(this.userService.EntityToDTO(this.userService.getUserById(id)));
+                .body(this.userService.convertToDTO(this.userService.getUserById(id)));
     }
 
     @GetMapping

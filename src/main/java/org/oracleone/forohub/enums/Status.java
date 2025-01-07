@@ -1,4 +1,4 @@
-package org.oracleone.forohub.Enums;
+package org.oracleone.forohub.enums;
 
 public enum Status {
     OPEN,

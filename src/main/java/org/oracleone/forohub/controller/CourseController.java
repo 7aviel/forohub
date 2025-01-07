@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseService courseService;
@@ -28,16 +28,16 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.courseService.EntityToDTO(
-                this.courseService.getCourseById(id)
-        ));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<CourseDTO>> getAllCourses(){
-        return ResponseEntity.status(HttpStatus.OK).body(
-                this.courseService.getAllCourses()
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(this.courseService.convertToDTO(
+                        this.courseService.getCourseById(id)
+                )
         );
     }
 
+    @GetMapping
+    public ResponseEntity<List<CourseDTO>> getCourses(){
+        return ResponseEntity.status(HttpStatus.OK).body(
+            this.courseService.getAllCourses()
+        );
+    }
 }

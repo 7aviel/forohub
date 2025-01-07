@@ -1,9 +1,7 @@
 package org.oracleone.forohub.persistence.DTO;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.oracleone.forohub.Enums.Category;
-import org.oracleone.forohub.persistence.entities.Course;
+import org.oracleone.forohub.enums.Category;
 
 public record CourseDTO(
         @NotNull

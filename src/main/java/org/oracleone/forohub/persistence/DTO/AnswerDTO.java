@@ -1,19 +1,16 @@
 package org.oracleone.forohub.persistence.DTO;
 
-import jakarta.validation.constraints.NotBlank;
-import org.oracleone.forohub.interfaces.EntityConverter;
-import org.oracleone.forohub.persistence.entities.Topic;
-import org.oracleone.forohub.persistence.entities.User;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 public record AnswerDTO (
-        @NotBlank
+        @NotNull
         String message,
-        TopicDTO topicDTO,
-        @NotBlank
+        TopicDTO topic,
+        @NotNull
         LocalDate creationDate,
-        @NotBlank
+        @NotNull
         UserDTO author,
         String solution
 ) {

@@ -2,10 +2,10 @@ package org.oracleone.forohub.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.oracleone.forohub.interfaces.EntityConverter;
 import org.oracleone.forohub.persistence.DTO.CourseDTO;
 import org.oracleone.forohub.persistence.entities.Course;
 import org.oracleone.forohub.persistence.repositories.CourseRepository;
+import org.oracleone.forohub.utils.CourseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,18 +13,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CourseService implements EntityConverter<CourseDTO, Course> {
+public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final CourseConverter courseConverter;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, CourseConverter courseConverter) {
         this.courseRepository = courseRepository;
+        this.courseConverter = courseConverter;
     }
 
     @Transactional
     public Course saveCourse(CourseDTO courseDTO){
-        return this.courseRepository.save(DTOtoEntity(courseDTO));
+        return this.courseRepository.save(courseConverter.DTOtoEntity(courseDTO));
     }
 
     public Course getCourseById(Long id){
@@ -39,22 +41,14 @@ public class CourseService implements EntityConverter<CourseDTO, Course> {
             throw new EntityNotFoundException("No courses found");
         }
         return courses.stream()
-                .map(this::EntityToDTO)
+                .map(this.courseConverter::EntityToDTO)
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public CourseDTO EntityToDTO(Course course) {
-        return new CourseDTO(course.getName(), course.getCategoryEnum());
+    public CourseDTO convertToDTO(Course course){
+        return this.courseConverter.EntityToDTO(course);
     }
 
-    @Override
-    public Course DTOtoEntity(CourseDTO courseDTO) {
-        return new Course(
-                courseDTO.name(),
-                courseDTO.category()
-        );
-    }
 
     public Course getByName(String name){
         return this.courseRepository.findByName(name).orElseThrow(()->null);

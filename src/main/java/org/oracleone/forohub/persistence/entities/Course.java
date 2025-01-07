@@ -1,11 +1,8 @@
 package org.oracleone.forohub.persistence.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.oracleone.forohub.Enums.Category;
-import org.oracleone.forohub.persistence.DTO.CourseDTO;
+import org.oracleone.forohub.enums.Category;
 
 @Entity
 @Data

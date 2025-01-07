@@ -1,11 +1,13 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.oracleone.forohub.controller.UserController;
 import org.oracleone.forohub.interfaces.EntityConverter;
 import org.oracleone.forohub.persistence.DTO.UserDTO;
 import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
 import org.oracleone.forohub.persistence.entities.Course;
 import org.oracleone.forohub.persistence.repositories.UserRepository;
+import org.oracleone.forohub.utils.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.oracleone.forohub.persistence.entities.User;
 import org.springframework.stereotype.Service;
@@ -14,13 +16,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements EntityConverter<UserDTO, User>{
+public class UserService{
 
     private final UserRepository userRepository;
+    private final UserConverter userConverter;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserConverter userConverter) {
         this.userRepository = userRepository;
+        this.userConverter = userConverter;
     }
 
     @Transactional
@@ -40,27 +44,13 @@ public class UserService implements EntityConverter<UserDTO, User>{
         );
     }
 
-
-    @Override
-    public UserDTO EntityToDTO(User user) {
-        return new UserDTO(user.getName(),user.getEmail());
-    }
-
-    @Override
-    public User DTOtoEntity(UserDTO userDTO) {
-        return new User(
-                userDTO.name(),
-                userDTO.email()
-        );
-    }
-
     public List<UserDTO> getAllUsers(){
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             throw new EntityNotFoundException("No users found");
         }
         return users.stream().map(
-                this::EntityToDTO
+                this.userConverter::EntityToDTO
         ).collect(Collectors.toList());
     }
 
@@ -68,6 +58,10 @@ public class UserService implements EntityConverter<UserDTO, User>{
         return this.userRepository.findByNameAndEmail(name,email).orElseThrow(
                 EntityNotFoundException::new
         );
+    }
+
+    public UserDTO convertToDTO(User user){
+        return this.userConverter.EntityToDTO(user);
     }
 
 }
