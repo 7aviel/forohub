@@ -1,19 +1,15 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.oracleone.forohub.controller.UserController;
-import org.oracleone.forohub.interfaces.EntityConverter;
 import org.oracleone.forohub.persistence.DTO.UserDTO;
 import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
-import org.oracleone.forohub.persistence.entities.Course;
 import org.oracleone.forohub.persistence.repositories.UserRepository;
 import org.oracleone.forohub.utils.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.oracleone.forohub.persistence.entities.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService{
@@ -44,14 +40,14 @@ public class UserService{
         );
     }
 
-    public List<UserDTO> getAllUsers(){
-        List<User> users = userRepository.findAll();
+    public Page<UserDTO> getAllUsers(Pageable pageable){
+        Page<User> users = userRepository.findAll(pageable);
         if (users.isEmpty()) {
             throw new EntityNotFoundException("No users found");
         }
-        return users.stream().map(
+        return users.map(
                 this.userConverter::EntityToDTO
-        ).collect(Collectors.toList());
+        );
     }
 
     public User getByNameAndEmail(String name, String email){

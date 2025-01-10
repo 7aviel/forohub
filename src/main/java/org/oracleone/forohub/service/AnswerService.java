@@ -6,10 +6,10 @@ import org.oracleone.forohub.persistence.entities.Answer;
 import org.oracleone.forohub.persistence.repositories.AnswerRepository;
 import org.oracleone.forohub.utils.AnswerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class AnswerService {
@@ -33,7 +33,7 @@ public class AnswerService {
         Answer newAnswer = new Answer();
         Optional.ofNullable(answerDTO.topic())
                 .orElseThrow(() -> new IllegalArgumentException("Topic cannot be null. Create a new Topic in DB if it does not exist."));
-        newAnswer.setTopic(this.topicService.getByTitle(answerDTO.topic().title()));
+        newAnswer.setTopic(this.topicService.getByTitle(answerDTO.topic()));
         Optional.ofNullable(answerDTO.author())
                 .orElseThrow(() -> new IllegalArgumentException("Author cannot be null. Create a new User in DB if it does not exist."));
         newAnswer.setAuthor(this.userService.getByNameAndEmail(answerDTO.author().name(), answerDTO.author().email()));
@@ -47,14 +47,14 @@ public class AnswerService {
         return this.answerRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No answer found"));
     }
 
-    public List<AnswerDTO> getAllAnswers(){
-        List<Answer> answers = this.answerRepository.findAll();
+    public Page<AnswerDTO> getAllAnswers(Pageable pageable){
+        Page<Answer> answers = this.answerRepository.findAll(pageable);
         if (answers.isEmpty()){
             throw new EntityNotFoundException("No answers found");
         }
-        return answers.stream().map(
+        return answers.map(
                 this.answerConverter::EntityToDTO
-        ).collect(Collectors.toList());
+        );
     }
 
     public AnswerDTO convertToDTO(Answer answer){

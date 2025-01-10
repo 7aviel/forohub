@@ -4,11 +4,11 @@ import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.AnswerDTO;
 import org.oracleone.forohub.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/answers")
@@ -34,9 +34,9 @@ public class AnswerController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AnswerDTO>> getAllAnswers(){
+    public ResponseEntity<Page<AnswerDTO>> getAllAnswers(Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(
-                this.answerService.getAllAnswers()
+                this.answerService.getAllAnswers(pageable)
         );
     }
 }

@@ -39,6 +39,7 @@ public class TopicConverter implements EntityConverter<TopicDTO, Topic> {
     @Override
     public TopicDTO EntityToDTO(Topic topic) {
         return new TopicDTO(
+                topic.getId(),
                 topic.getTitle(),
                 topic.getCreationDate(),
                 topic.getStatus(),

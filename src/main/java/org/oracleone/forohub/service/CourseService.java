@@ -7,6 +7,8 @@ import org.oracleone.forohub.persistence.entities.Course;
 import org.oracleone.forohub.persistence.repositories.CourseRepository;
 import org.oracleone.forohub.utils.CourseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,14 +37,13 @@ public class CourseService {
 
 
 
-    public List<CourseDTO> getAllCourses(){
-        List<Course> courses = courseRepository.findAll();
+    public Page<CourseDTO> getAllCourses(Pageable pageable){
+        Page<Course> courses = courseRepository.findAll(pageable);
         if (courses.isEmpty()) {
             throw new EntityNotFoundException("No courses found");
         }
-        return courses.stream()
-                .map(this.courseConverter::EntityToDTO)
-                .collect(Collectors.toList());
+        return courses
+                .map(this.courseConverter::EntityToDTO);
     }
 
     public CourseDTO convertToDTO(Course course){

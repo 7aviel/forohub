@@ -4,38 +4,66 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
+import org.oracleone.forohub.enums.Solution;
 
 import java.time.LocalDate;
 
-@Data
 @Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "answer_id")
     private Long id;
+    @NotNull
     private String message;
     @ManyToOne
     @JoinColumn(name = "topic_id")
     @JsonBackReference
     private Topic topic;
+    @NotNull
     private LocalDate creationDate;
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @NotNull
     private User author;
-    private String solution;
+    @Enumerated(EnumType.STRING)
+    private Solution solution;
 
-    public Answer() {
-
-    }
-
-    public Answer(String message, Topic topic, LocalDate creationDate, User author, String solution) {
+    public Answer(String message, Topic topic, LocalDate localDate, User user, Solution solution)
+    {
         this.message = message;
         this.topic = topic;
+        this.creationDate = localDate;
+        this.author = user;
+        this.solution = solution;
+    }
+
+    public Answer() {
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public void setSolution(Solution solution) {
         this.solution = solution;
     }
 
@@ -55,27 +83,7 @@ public class Answer {
         return author;
     }
 
-    public String getSolution() {
+    public Solution getSolution() {
         return solution;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public void setSolution(String solution) {
-        this.solution = solution;
     }
 }

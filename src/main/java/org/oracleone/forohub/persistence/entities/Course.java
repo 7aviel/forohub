@@ -1,6 +1,8 @@
 package org.oracleone.forohub.persistence.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.oracleone.forohub.enums.Category;
 
@@ -12,13 +14,15 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Long id;
+    @NotNull
     private String name;
     @Enumerated(value = EnumType.STRING)
-    private Category categoryEnum;
+    @NotNull
+    private Category category;
 
-    public Course(String name, Category categoryEnum) {
+    public Course(String name, Category category) {
         this.name = name;
-        this.categoryEnum = categoryEnum;
+        this.category = category;
     }
 
     public String getName() {
@@ -26,7 +30,7 @@ public class Course {
     }
 
     public Category getCategoryEnum() {
-        return categoryEnum;
+        return category;
     }
 
     public Course() {

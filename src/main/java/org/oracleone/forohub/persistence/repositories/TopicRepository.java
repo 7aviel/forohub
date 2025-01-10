@@ -1,6 +1,5 @@
 package org.oracleone.forohub.persistence.repositories;
 
-import jakarta.transaction.Transactional;
 import org.oracleone.forohub.persistence.entities.Topic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +12,5 @@ import java.util.Optional;
 public interface TopicRepository extends JpaRepository<Topic,Long> {
 
     @Query("SELECT t FROM Topic t WHERE t.title =:title")
-    @Transactional
     Optional<Topic> getTopicByTitle(@Param("title") String title);
 }

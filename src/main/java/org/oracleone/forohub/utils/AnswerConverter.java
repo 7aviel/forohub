@@ -20,7 +20,7 @@ public class AnswerConverter implements EntityConverter<AnswerDTO, Answer> {
     public AnswerDTO EntityToDTO(Answer answer) {
         return new AnswerDTO(
                 answer.getMessage(),
-                null,
+                answer.getTopic().getTitle(),
                 answer.getCreationDate(),
                 userConverter.EntityToDTO(answer.getAuthor()),
                 answer.getSolution()
@@ -31,6 +31,7 @@ public class AnswerConverter implements EntityConverter<AnswerDTO, Answer> {
     public Answer DTOtoEntity(AnswerDTO answerDTO) {
         return new Answer(
                 answerDTO.message(),
+                //Not implemented nor needed for now.
                 null,
                 answerDTO.creationDate(),
                 userConverter.DTOtoEntity(answerDTO.author()),
