@@ -12,6 +12,6 @@ import java.util.Optional;
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer,Long> {
 
-    @Query("SELECT a FROM Answer a WHERE a.author =: author")
-    Optional<List<Answer>> findByName(@Param("author") String author);
+   @Query("SELECT a FROM Answer a WHERE a.author =: author")
+    Optional<List<Answer>> findByAuthor(@Param("author") String author);
 }

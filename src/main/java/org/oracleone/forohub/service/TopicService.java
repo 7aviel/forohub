@@ -1,14 +1,19 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import org.oracleone.forohub.persistence.DTO.TopicDTO;
+import org.oracleone.forohub.persistence.DTO.UpdateTopicDTO;
+import org.oracleone.forohub.persistence.entities.Answer;
 import org.oracleone.forohub.persistence.entities.Topic;
 import org.oracleone.forohub.persistence.repositories.TopicRepository;
+import org.oracleone.forohub.utils.AnswerConverter;
 import org.oracleone.forohub.utils.TopicConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,13 +23,15 @@ public class TopicService{
     private final TopicRepository topicRepository;
     private final UserService userService;
     private final TopicConverter topicConverter;
+    private final AnswerConverter answerConverter;
 
     @Autowired
-    public TopicService(UserService userService, CourseService courseService, TopicRepository topicRepository, TopicConverter topicConverter) {
+    public TopicService(UserService userService, CourseService courseService, TopicRepository topicRepository, TopicConverter topicConverter, AnswerConverter answerConverter) {
         this.courseService = courseService;
         this.topicRepository = topicRepository;
         this.userService = userService;
         this.topicConverter = topicConverter;
+        this.answerConverter = answerConverter;
     }
 
     public Topic createNewTopic(TopicDTO topicDTO){
@@ -68,6 +75,30 @@ public class TopicService{
             throw new EntityNotFoundException("Not found");
         }
         return topics.map(this.topicConverter::EntityToDTO);
+    }
+
+    public String deleteById(Long id){
+        this.topicRepository.deleteById(id);
+        return "Topic with ID " + id + " was deleted";
+    }
+
+    @Transactional
+    public Topic updateTopic(UpdateTopicDTO updateTopicDTO, Long id){
+        Topic updateTopic = this.topicRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Not found"));
+        Optional.ofNullable(updateTopicDTO.title())
+                .ifPresent(updateTopic::setTitle);
+        Optional.ofNullable(updateTopicDTO.status())
+                        .ifPresent(updateTopic::setStatus);
+        Optional.ofNullable(updateTopicDTO.answers())
+                .filter(answerDTO -> !answerDTO.isEmpty())
+                        .ifPresent(answers -> {
+                                    List<Answer> answerList = answers.stream()
+                                            .map(this.answerConverter::DTOtoEntity)
+                                            .toList();
+                                    updateTopic.setAnswers(answerList);
+                        });
+        this.topicRepository.save(updateTopic);
+        return updateTopic;
     }
 
 }

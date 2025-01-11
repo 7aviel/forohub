@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public record TopicDTO(
-        @NotNull
         Long id,
         @NotBlank
         String title,

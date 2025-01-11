@@ -1,8 +1,8 @@
 package org.oracleone.forohub.controller;
-
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.persistence.DTO.TopicDTO;
+import org.oracleone.forohub.persistence.DTO.UpdateTopicDTO;
 import org.oracleone.forohub.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class TopicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TopicDTO> getTopicById(@PathVariable @NotBlank Long id){
+    public ResponseEntity<TopicDTO> getTopicById(@PathVariable @NotNull Long id){
         return ResponseEntity.status(HttpStatus.OK).body(this.topicService.convertTopicToDTO(
                 topicService.getById(id)
         ));
@@ -39,6 +39,22 @@ public class TopicController {
     @GetMapping
     public ResponseEntity<Page<TopicDTO>> getAllTopics(@PageableDefault(size = 8,sort = {"creationDate"}) Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(this.topicService.getAllTopics(pageable));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTopicById(@PathVariable @NotNull Long id){
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(this.topicService.deleteById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateTopic(@RequestBody @Valid UpdateTopicDTO updateTopicDTO,
+                                         @PathVariable @NotNull Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(this.topicService.updateTopic(updateTopicDTO, id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteTopic(@PathVariable @NotNull Long id){
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(this.topicService.deleteById(id));
     }
 
 }

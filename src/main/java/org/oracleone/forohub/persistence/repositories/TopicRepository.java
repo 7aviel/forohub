@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic,Long> {
 
-    @Query("SELECT t FROM Topic t WHERE t.title =:title")
-    Optional<Topic> getTopicByTitle(@Param("title") String title);
+   // @Query("SELECT t FROM Topic t WHERE t.title =:title")
+    Optional<Topic> findTopicByTitle(@Param("title") String title);
 }

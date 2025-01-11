@@ -19,6 +19,6 @@ public class AnswerHelperService {
 
 
     public List<Answer> getByAuthor(String author){
-        return this.answerRepository.findByName(author).orElseThrow(()->null);
+        return this.answerRepository.findByAuthor(author).orElseThrow(()->null);
     }
 }

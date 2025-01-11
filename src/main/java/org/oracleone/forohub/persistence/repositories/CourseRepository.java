@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<Course, Long> {
 
-    @Query("SELECT c FROM Course c WHERE c.name =:name")
+    //@Query("SELECT c FROM Course c WHERE c.name =:name")
     Optional<Course> findByName(@Param("name") String name);
 }
