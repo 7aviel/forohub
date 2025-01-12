@@ -7,12 +7,17 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.validator.constraints.UniqueElements;
+import org.oracleone.forohub.enums.Role;
 import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -41,6 +46,10 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "perfil_id")
     )
     private List<Perfil> perfilList;
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Set<Role> roles = new HashSet<>();
 
     public User(String name, String email, String password) {
         this.name = name;
@@ -56,12 +65,18 @@ public class User implements UserDetails {
     public User() {
     }
 
+
+
     public String getName() {
         return name;
     }
 
     public String getEmail() {
         return email;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 
     @Override
@@ -71,7 +86,9 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return this.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                .collect(Collectors.toSet());
     }
 
     @Override
