@@ -1,7 +1,8 @@
 package org.oracleone.forohub.controller;
 
 import jakarta.validation.Valid;
-import org.oracleone.forohub.persistence.DTO.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.answerdto.UpdateAnswerDTO;
 import org.oracleone.forohub.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,5 +39,17 @@ public class AnswerController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.answerService.getAllAnswers(pageable)
         );
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteAnswer(@PathVariable Long id){
+        this.answerService.deleteAnswer(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateAnswer(@RequestBody @Valid UpdateAnswerDTO updateAnswerDTO,
+                                          @PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(this.answerService.updateAnswer(updateAnswerDTO, id));
     }
 }

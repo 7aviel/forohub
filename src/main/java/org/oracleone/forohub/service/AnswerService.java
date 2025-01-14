@@ -1,7 +1,9 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.oracleone.forohub.persistence.DTO.AnswerDTO;
+import jakarta.validation.Valid;
+import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.answerdto.UpdateAnswerDTO;
 import org.oracleone.forohub.persistence.entities.Answer;
 import org.oracleone.forohub.persistence.repositories.AnswerRepository;
 import org.oracleone.forohub.utils.AnswerConverter;
@@ -61,4 +63,14 @@ public class AnswerService {
         return this.answerConverter.EntityToDTO(answer);
     }
 
+    public void deleteAnswer(Long id) {
+        this.answerRepository.deleteById(id);
+    }
+
+    public AnswerDTO updateAnswer(@Valid UpdateAnswerDTO updateAnswerDTO, Long id) {
+        Answer answer = this.findById(id);
+        answer.setMessage(updateAnswerDTO.message());
+        answer.setSolution(updateAnswerDTO.solution());
+        return this.answerConverter.EntityToDTO(this.answerRepository.save(answer));
+    }
 }

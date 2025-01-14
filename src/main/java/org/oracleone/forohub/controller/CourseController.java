@@ -40,4 +40,17 @@ public class CourseController {
             this.courseService.getAllCourses(pageable)
         );
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCourse(@PathVariable Long id){
+        this.courseService.deleteCourse(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateCourse(@RequestBody @Valid CourseDTO courseDTO,
+                                          @PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(this.courseService.updateCourse(courseDTO, id));
+    }
+
 }

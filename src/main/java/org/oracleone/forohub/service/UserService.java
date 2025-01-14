@@ -68,4 +68,7 @@ public class UserService{
         return this.userConverter.EntityToDTO(user);
     }
 
+    public void deleteUser(Long id) {
+        this.userRepository.deleteById(id);
+    }
 }

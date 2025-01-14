@@ -1,7 +1,8 @@
-package org.oracleone.forohub.persistence.DTO;
+package org.oracleone.forohub.persistence.DTO.answerdto;
 
 import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.enums.Solution;
+import org.oracleone.forohub.persistence.DTO.UserDTO;
 
 import java.time.LocalDate;
 

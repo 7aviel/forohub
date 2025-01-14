@@ -27,7 +27,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(this.userService.convertToDTO(this.userService.getUserById(id)));
@@ -38,6 +38,12 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.userService.getAllUsers(pageable)
         );
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id){
+        this.userService.deleteUser(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }

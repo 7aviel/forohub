@@ -2,6 +2,7 @@ package org.oracleone.forohub.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.CourseDTO;
 import org.oracleone.forohub.persistence.entities.Course;
 import org.oracleone.forohub.persistence.repositories.CourseRepository;
@@ -55,4 +56,14 @@ public class CourseService {
         return this.courseRepository.findByName(name).orElseThrow(()->null);
     }
 
+    public void deleteCourse(Long id) {
+        this.courseRepository.deleteById(id);
+    }
+
+    public CourseDTO updateCourse(@Valid CourseDTO courseDTO, Long id) {
+        Course course = this.courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course not found"));
+        course.setName(courseDTO.name());
+        course.setCategory(courseDTO.category());
+        return this.courseConverter.EntityToDTO(this.courseRepository.save(course));
+    }
 }

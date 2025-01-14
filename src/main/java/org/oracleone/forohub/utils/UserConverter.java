@@ -10,7 +10,7 @@ public class UserConverter implements EntityConverter<UserDTO, User> {
 
     @Override
     public UserDTO EntityToDTO(User user) {
-        return new UserDTO(user.getName(),user.getEmail());
+        return new UserDTO(user.getName(),user.getEmail(),user.getRoles());
     }
 
     @Override
