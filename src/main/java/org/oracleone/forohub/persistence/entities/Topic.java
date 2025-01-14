@@ -9,12 +9,12 @@ import lombok.Builder;
 import lombok.Data;
 import org.oracleone.forohub.enums.Status;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
 @Entity
-@Builder
 @AllArgsConstructor
 public class Topic {
 

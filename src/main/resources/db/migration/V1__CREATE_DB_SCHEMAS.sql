@@ -1,15 +1,10 @@
--- V1__create_tables.sql
--- This script creates the necessary tables if they do not exist
-
 -- Create 'user' table
 CREATE TABLE IF NOT EXISTS `user` (
                                       `user_id` BIGINT NOT NULL AUTO_INCREMENT,
                                       `email` VARCHAR(255) UNIQUE NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`user_id`),
-    UNIQUE KEY `UKob8kqyqqgmefl0aco34akdtpe` (`email`),
-    UNIQUE KEY `email` (`email`)
+    PRIMARY KEY (`user_id`)
     ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- Create 'course' table

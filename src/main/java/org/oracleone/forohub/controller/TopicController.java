@@ -52,9 +52,4 @@ public class TopicController {
         return ResponseEntity.status(HttpStatus.OK).body(this.topicService.updateTopic(updateTopicDTO, id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTopic(@PathVariable @NotNull Long id){
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(this.topicService.deleteById(id));
-    }
-
 }

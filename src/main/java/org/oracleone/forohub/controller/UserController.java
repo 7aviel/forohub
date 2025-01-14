@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
@@ -21,9 +21,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<?> newUser(@RequestBody @Valid UserRegisterDTO userRegisterDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.saveUser(userRegisterDTO));
+        this.userService.saveUser(userRegisterDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/{id}")
@@ -32,7 +33,7 @@ public class UserController {
                 .body(this.userService.convertToDTO(this.userService.getUserById(id)));
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<Page<UserDTO>> getAllUsers(Pageable pageable){
         return ResponseEntity.status(HttpStatus.OK).body(
                 this.userService.getAllUsers(pageable)

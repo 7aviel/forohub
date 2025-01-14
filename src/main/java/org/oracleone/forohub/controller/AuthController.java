@@ -1,3 +1,5 @@
+package org.oracleone.forohub.controller;
+
 import org.oracleone.forohub.persistence.DTO.AuthenticationRequest;
 import org.oracleone.forohub.persistence.DTO.AuthenticationResponse;
 import org.oracleone.forohub.service.CustomUserDetailsService;

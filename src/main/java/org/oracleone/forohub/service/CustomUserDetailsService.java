@@ -1,5 +1,6 @@
 package org.oracleone.forohub.service;
 
+import jakarta.transaction.Transactional;
 import org.oracleone.forohub.persistence.entities.User;
 import org.oracleone.forohub.persistence.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

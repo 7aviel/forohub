@@ -1,6 +1,7 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.oracleone.forohub.enums.Role;
 import org.oracleone.forohub.persistence.DTO.UserDTO;
 import org.oracleone.forohub.persistence.DTO.UserRegisterDTO;
 import org.oracleone.forohub.persistence.repositories.UserRepository;
@@ -9,23 +10,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.oracleone.forohub.persistence.entities.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Service
 public class UserService{
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserConverter userConverter) {
+    public UserService(UserRepository userRepository, UserConverter userConverter, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userConverter = userConverter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
-    public User saveUser(UserRegisterDTO userRegisterDTO){
-        return this.userRepository.save(userRegisterDTOToUser(userRegisterDTO));
+    public void saveUser(UserRegisterDTO userRegisterDTO){
+        this.userRepository.save(userRegisterDTOToUser(userRegisterDTO));
     }
 
     public User getUserById(Long id){
@@ -36,7 +42,9 @@ public class UserService{
         return new User(
                 userRegisterDTO.name(),
                 userRegisterDTO.email(),
-                userRegisterDTO.password()
+                passwordEncoder.encode(userRegisterDTO.password()),
+                userRegisterDTO.role().stream()
+                        .map(role -> Role.valueOf(role.name())).collect(Collectors.toSet()) // Convert enum values .collect(Collectors.toSet())
         );
     }
 
