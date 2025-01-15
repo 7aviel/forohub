@@ -1,3 +1,0 @@
-
-ALTER TABLE topic
-    MODIFY status VARCHAR(255) NOT NULL;

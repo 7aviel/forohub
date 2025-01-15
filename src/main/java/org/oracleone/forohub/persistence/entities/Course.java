@@ -36,6 +36,15 @@ public class Course {
     public Course() {
     }
 
+    public Category getCategory() {
+        return category;
+    }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

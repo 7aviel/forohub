@@ -69,6 +69,30 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public List<Perfil> getPerfilList() {
+        return perfilList;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPerfilList(List<Perfil> perfilList) {
+        this.perfilList = perfilList;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public String getName() {
         return name;
     }
