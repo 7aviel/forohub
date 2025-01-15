@@ -1,7 +1,7 @@
 package org.oracleone.forohub.persistence.DTO;
 
 import org.oracleone.forohub.enums.Status;
-import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.AnswerDTO;
 
 import java.util.List;
 

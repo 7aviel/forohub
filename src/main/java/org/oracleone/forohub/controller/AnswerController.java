@@ -1,8 +1,9 @@
 package org.oracleone.forohub.controller;
 
 import jakarta.validation.Valid;
-import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
-import org.oracleone.forohub.persistence.DTO.answerdto.UpdateAnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.RegisterAnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.UpdateAnswerDTO;
 import org.oracleone.forohub.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,8 +24,8 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveAnswer(@RequestBody @Valid AnswerDTO answerDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.answerService.saveNewAnswer(answerDTO));
+    public ResponseEntity<?> saveAnswer(@RequestBody @Valid RegisterAnswerDTO registerAnswerDTO){
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.answerService.saveNewAnswer(registerAnswerDTO));
     }
 
     @GetMapping("/{id}")

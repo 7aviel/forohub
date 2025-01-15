@@ -1,4 +1,4 @@
-package org.oracleone.forohub.persistence.DTO.answerdto;
+package org.oracleone.forohub.persistence.DTO.AnswerDTOs;
 
 import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.enums.Solution;

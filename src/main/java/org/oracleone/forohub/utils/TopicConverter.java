@@ -1,7 +1,7 @@
 package org.oracleone.forohub.utils;
 
 import org.oracleone.forohub.interfaces.EntityConverter;
-import org.oracleone.forohub.persistence.DTO.TopicDTO;
+import org.oracleone.forohub.persistence.DTO.TopicDTOs.TopicDTO;
 import org.oracleone.forohub.persistence.entities.Topic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

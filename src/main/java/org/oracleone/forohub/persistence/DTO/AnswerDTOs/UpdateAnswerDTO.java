@@ -1,10 +1,7 @@
-package org.oracleone.forohub.persistence.DTO.answerdto;
-
-import jakarta.validation.constraints.NotEmpty;
+package org.oracleone.forohub.persistence.DTO.AnswerDTOs;
 import org.oracleone.forohub.enums.Solution;
 
 public record UpdateAnswerDTO(
-        @NotEmpty
         String message,
         Solution solution
 ) {

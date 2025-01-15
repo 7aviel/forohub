@@ -1,16 +1,14 @@
-package org.oracleone.forohub.persistence.DTO;
+package org.oracleone.forohub.persistence.DTO.TopicDTOs;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.enums.Status;
-import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.CourseDTO;
 
 import java.time.LocalDate;
-import java.util.List;
 
-public record TopicDTO(
-        Long id,
+public record RegisterTopicDTO(
         @NotBlank
         String title,
         @NotNull
@@ -19,11 +17,6 @@ public record TopicDTO(
         Status status,
         @NotNull
         @Valid
-        UserDTO user,
-        @NotNull
-        @Valid
-        CourseDTO course,
-        List<AnswerDTO> answers
+        CourseDTO course
 ) {
-
 }

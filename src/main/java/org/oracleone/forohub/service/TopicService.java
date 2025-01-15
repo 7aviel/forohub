@@ -1,15 +1,20 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
-import org.oracleone.forohub.persistence.DTO.TopicDTO;
+import org.oracleone.forohub.persistence.DTO.TopicDTOs.RegisterTopicDTO;
+import org.oracleone.forohub.persistence.DTO.TopicDTOs.TopicDTO;
 import org.oracleone.forohub.persistence.DTO.UpdateTopicDTO;
 import org.oracleone.forohub.persistence.entities.Answer;
 import org.oracleone.forohub.persistence.entities.Topic;
+import org.oracleone.forohub.persistence.entities.User;
 import org.oracleone.forohub.persistence.repositories.TopicRepository;
 import org.oracleone.forohub.utils.AnswerConverter;
 import org.oracleone.forohub.utils.TopicConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,30 +39,19 @@ public class TopicService{
         this.answerConverter = answerConverter;
     }
 
-    public Topic createNewTopic(TopicDTO topicDTO){
+    @Transactional
+    public Topic createNewTopic(RegisterTopicDTO registerTopicDTO){
         Topic newTopic = new Topic();
-        Optional.ofNullable(topicDTO.user())
-                .orElseThrow(() -> new IllegalArgumentException("User CANNOT be null. Add a new User in DB if does not already exists"));
-            newTopic.setUser(this.userService.getByNameAndEmail(topicDTO.user().name(),topicDTO.user().email()));
-        Optional.ofNullable(topicDTO.course())
+        Optional.ofNullable(registerTopicDTO.course())
                         .orElseThrow(() -> new EntityNotFoundException("Course cannot be null. Create a new Course in DB if does not exists"));
-            newTopic.setCourse(this.courseService.getByName(topicDTO.course().name()));
-/*      MARKED TO DELETE
-        Optional.ofNullable(topicDTO.answers())
-                .filter(answers -> !answers.isEmpty())
-                .ifPresentOrElse( answers -> {
-                    List<Answer> answerList = answers
-                            .stream()
-                            .flatMap(answerDTO -> this.answerService
-                                    .getByAuthor(answerDTO.author().name()).stream())
-                            .collect(Collectors.toList());
-                    newTopic.setAnswers(answerList);
-                    },
-                        () -> newTopic.setAnswers(null) );*/
-        newTopic.setAnswers(null);
-        newTopic.setTitle(topicDTO.title());
-        newTopic.setCreationDate(topicDTO.creationDate());
-        newTopic.setStatus(topicDTO.status());
+            newTopic.setCourse(this.courseService.getByName(registerTopicDTO.course().name()));
+        newTopic.setTitle(registerTopicDTO.title());
+        newTopic.setCreationDate(registerTopicDTO.creationDate());
+        newTopic.setStatus(registerTopicDTO.status());
+        // Get the authenticated user
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User author = this.userService.findByEmail(userDetails.getUsername());
+        newTopic.setUser(author);
         return this.topicRepository.save(newTopic);
     }
 
@@ -77,28 +71,45 @@ public class TopicService{
         return topics.map(this.topicConverter::EntityToDTO);
     }
 
-    public String deleteById(Long id){
-        this.topicRepository.deleteById(id);
-        return "Topic with ID " + id + " was deleted";
+    @Transactional
+    public void deleteTopic(Long id){
+        Topic topic = topicRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Topic not found"));
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.findByEmail(userDetails.getUsername());
+
+        if (!topic.getUser().equals(authenticatedUser)) {
+            throw new AccessDeniedException("You are not authorized to delete this topic");
+        }else {
+            this.topicRepository.deleteById(id);
+        }
+
     }
 
     @Transactional
     public Topic updateTopic(UpdateTopicDTO updateTopicDTO, Long id){
+
         Topic updateTopic = this.topicRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("Not found"));
-        Optional.ofNullable(updateTopicDTO.title())
-                .ifPresent(updateTopic::setTitle);
-        Optional.ofNullable(updateTopicDTO.status())
-                        .ifPresent(updateTopic::setStatus);
-        Optional.ofNullable(updateTopicDTO.answers())
-                .filter(answerDTO -> !answerDTO.isEmpty())
-                        .ifPresent(answers -> {
-                                    List<Answer> answerList = answers.stream()
-                                            .map(this.answerConverter::DTOtoEntity)
-                                            .toList();
-                                    updateTopic.setAnswers(answerList);
-                        });
-        this.topicRepository.save(updateTopic);
-        return updateTopic;
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.findByEmail(userDetails.getUsername());
+
+        if (!updateTopic.getUser().equals(authenticatedUser)) {
+            throw new AccessDeniedException("You are not authorized to update this topic");
+        }else {
+            Optional.ofNullable(updateTopicDTO.title())
+                    .ifPresent(updateTopic::setTitle);
+            Optional.ofNullable(updateTopicDTO.status())
+                    .ifPresent(updateTopic::setStatus);
+            Optional.ofNullable(updateTopicDTO.answers())
+                    .filter(answerDTO -> !answerDTO.isEmpty())
+                    .ifPresent(answers -> {
+                        List<Answer> answerList = answers.stream()
+                                .map(this.answerConverter::DTOtoEntity)
+                                .toList();
+                        updateTopic.setAnswers(answerList);
+                    });
+            this.topicRepository.save(updateTopic);
+            return updateTopic;
+        }
     }
 
 }

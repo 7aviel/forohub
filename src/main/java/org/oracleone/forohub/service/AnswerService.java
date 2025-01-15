@@ -2,14 +2,19 @@ package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.oracleone.forohub.persistence.DTO.answerdto.AnswerDTO;
-import org.oracleone.forohub.persistence.DTO.answerdto.UpdateAnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.AnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.RegisterAnswerDTO;
+import org.oracleone.forohub.persistence.DTO.AnswerDTOs.UpdateAnswerDTO;
 import org.oracleone.forohub.persistence.entities.Answer;
+import org.oracleone.forohub.persistence.entities.User;
 import org.oracleone.forohub.persistence.repositories.AnswerRepository;
 import org.oracleone.forohub.utils.AnswerConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -31,17 +36,17 @@ public class AnswerService {
     }
 
     @Transactional
-    public Answer saveNewAnswer(AnswerDTO answerDTO){
+    public Answer saveNewAnswer(RegisterAnswerDTO registerAnswerDTO){
         Answer newAnswer = new Answer();
-        Optional.ofNullable(answerDTO.topic())
+        Optional.ofNullable(registerAnswerDTO.topicId())
                 .orElseThrow(() -> new IllegalArgumentException("Topic cannot be null. Create a new Topic in DB if it does not exist."));
-        newAnswer.setTopic(this.topicService.getByTitle(answerDTO.topic()));
-        Optional.ofNullable(answerDTO.author())
-                .orElseThrow(() -> new IllegalArgumentException("Author cannot be null. Create a new User in DB if it does not exist."));
-        newAnswer.setAuthor(this.userService.getByNameAndEmail(answerDTO.author().name(), answerDTO.author().email()));
-        newAnswer.setMessage(answerDTO.message());
-        newAnswer.setCreationDate(answerDTO.creationDate());
-        newAnswer.setSolution(answerDTO.solution());
+        newAnswer.setTopic(this.topicService.getById(registerAnswerDTO.topicId()));
+        newAnswer.setMessage(registerAnswerDTO.message());
+        newAnswer.setCreationDate(registerAnswerDTO.creationDate());
+        newAnswer.setSolution(registerAnswerDTO.solution());
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User author = this.userService.findByEmail(userDetails.getUsername());
+        newAnswer.setAuthor(author);
         return this.answerRepository.save(newAnswer);
     }
 
@@ -63,14 +68,31 @@ public class AnswerService {
         return this.answerConverter.EntityToDTO(answer);
     }
 
+    @Transactional
     public void deleteAnswer(Long id) {
-        this.answerRepository.deleteById(id);
+        Answer answer = answerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Answer not found"));
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.findByEmail(userDetails.getUsername());
+
+        if (!answer.getAuthor().equals(authenticatedUser)) {
+            throw new AccessDeniedException("You are not authorized to delete this answer");
+        }else{
+            answerRepository.delete(answer);
+        }
     }
 
+    @Transactional
     public AnswerDTO updateAnswer(@Valid UpdateAnswerDTO updateAnswerDTO, Long id) {
         Answer answer = this.findById(id);
-        answer.setMessage(updateAnswerDTO.message());
-        answer.setSolution(updateAnswerDTO.solution());
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User authenticatedUser = userService.findByEmail(userDetails.getUsername());
+
+        if (!answer.getAuthor().equals(authenticatedUser)) {
+            throw new AccessDeniedException("You are not authorized to update this answer");
+        }else {
+            Optional.ofNullable(updateAnswerDTO.message()).ifPresent(answer::setMessage);
+            Optional.ofNullable(updateAnswerDTO.solution()).ifPresent(answer::setSolution);
+        }
         return this.answerConverter.EntityToDTO(this.answerRepository.save(answer));
     }
 }

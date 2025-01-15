@@ -56,10 +56,12 @@ public class CourseService {
         return this.courseRepository.findByName(name).orElseThrow(()->null);
     }
 
+    @Transactional
     public void deleteCourse(Long id) {
         this.courseRepository.deleteById(id);
     }
 
+    @Transactional
     public CourseDTO updateCourse(@Valid CourseDTO courseDTO, Long id) {
         Course course = this.courseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Course not found"));
         course.setName(courseDTO.name());
