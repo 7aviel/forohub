@@ -1,5 +1,6 @@
 package org.oracleone.forohub.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.oracleone.forohub.persistence.DTO.AuthenticationRequest;
 import org.oracleone.forohub.persistence.DTO.AuthenticationResponse;
 import org.oracleone.forohub.service.CustomUserDetailsService;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,7 +35,8 @@ public class AuthController {
 
     @PostMapping
     public ResponseEntity<?> createAuthenticationToken(@RequestBody
-                                                       AuthenticationRequest authenticationRequest) throws Exception {
+                                                       AuthenticationRequest authenticationRequest,
+                                                       HttpSession session)  throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -43,6 +47,7 @@ public class AuthController {
         }
         final UserDetails userDetails = customUserDetailsService.loadUserByUsername(authenticationRequest.username());
         final String jwt = jwtUtil.generateToken(userDetails);
+        session.setAttribute("sessionDate", LocalDate.now());
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

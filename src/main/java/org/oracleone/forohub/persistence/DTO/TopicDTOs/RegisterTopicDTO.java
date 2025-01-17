@@ -12,8 +12,6 @@ public record RegisterTopicDTO(
         @NotBlank
         String title,
         @NotNull
-        LocalDate creationDate,
-        @NotNull
         Status status,
         @NotNull
         @Valid

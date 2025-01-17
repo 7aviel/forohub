@@ -1,5 +1,6 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import org.oracleone.forohub.persistence.DTO.TopicDTOs.RegisterTopicDTO;
 import org.oracleone.forohub.persistence.DTO.TopicDTOs.TopicDTO;
 import org.oracleone.forohub.persistence.DTO.UpdateTopicDTO;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,13 +42,17 @@ public class TopicService{
     }
 
     @Transactional
-    public Topic createNewTopic(RegisterTopicDTO registerTopicDTO){
+    public Topic createNewTopic(RegisterTopicDTO registerTopicDTO, HttpSession session){
         Topic newTopic = new Topic();
         Optional.ofNullable(registerTopicDTO.course())
                         .orElseThrow(() -> new EntityNotFoundException("Course cannot be null. Create a new Course in DB if does not exists"));
             newTopic.setCourse(this.courseService.getByName(registerTopicDTO.course().name()));
         newTopic.setTitle(registerTopicDTO.title());
-        newTopic.setCreationDate(registerTopicDTO.creationDate());
+        LocalDate sessionDate = (LocalDate) session.getAttribute("sessionDate");
+        if (sessionDate == null) {
+            throw new IllegalStateException("Session date not found");
+        }
+        newTopic.setCreationDate(sessionDate);
         newTopic.setStatus(registerTopicDTO.status());
         // Get the authenticated user
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

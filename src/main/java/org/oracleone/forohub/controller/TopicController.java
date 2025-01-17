@@ -1,4 +1,5 @@
 package org.oracleone.forohub.controller;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.oracleone.forohub.persistence.DTO.TopicDTOs.RegisterTopicDTO;
@@ -25,9 +26,10 @@ public class TopicController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postTopics(@RequestBody @Valid RegisterTopicDTO registerTopicDTO){
+    public ResponseEntity<?> postTopics(@RequestBody @Valid RegisterTopicDTO registerTopicDTO,
+                                        HttpSession httpSession){
         return ResponseEntity.status(HttpStatus.OK).body(this.topicService
-                .createNewTopic(registerTopicDTO));
+                .createNewTopic(registerTopicDTO, httpSession));
     }
 
     @GetMapping("/{id}")
