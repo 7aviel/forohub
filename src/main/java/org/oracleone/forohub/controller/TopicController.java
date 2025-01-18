@@ -1,4 +1,5 @@
 package org.oracleone.forohub.controller;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/topics")
+@SecurityRequirement(name = "bearer-key")
 public class TopicController {
 
     private final TopicService topicService;

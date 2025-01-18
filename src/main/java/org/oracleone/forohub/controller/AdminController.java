@@ -1,5 +1,6 @@
 package org.oracleone.forohub.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.UpdateCourseDTO;
 import org.oracleone.forohub.persistence.DTO.UserDTO;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
+@SecurityRequirement(name = "bearer-key")
 public class AdminController {
 
     private final AdminService adminService;

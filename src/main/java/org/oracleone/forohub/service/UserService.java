@@ -61,12 +61,6 @@ public class UserService {
                 this.userConverter::EntityToDTO
         );
     }
-    /* MARKED TO DELETE
-    public User getByNameAndEmail(String name, String email){
-        return this.userRepository.findByNameAndEmail(name,email).orElseThrow(
-                EntityNotFoundException::new
-        );
-    }*/
 
     public UserDTO convertToDTO(User user) {
         return this.userConverter.EntityToDTO(user);

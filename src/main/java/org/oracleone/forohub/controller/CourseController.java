@@ -1,4 +1,5 @@
 package org.oracleone.forohub.controller;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.CourseDTO;
 import org.oracleone.forohub.service.CourseService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
+@SecurityRequirement(name = "bearer-key")
 public class CourseController {
 
     private final CourseService courseService;

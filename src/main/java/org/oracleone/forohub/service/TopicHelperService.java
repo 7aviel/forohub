@@ -16,10 +16,6 @@ public class TopicHelperService {
         this.topicRepository = topicRepository;
     }
 
-    public Topic getByTitle(String title){
-        return this.topicRepository.findTopicByTitle(title)
-                .orElseThrow(()->new EntityNotFoundException("Topic not found"));
-    }
 
     public Topic getById(Long id){
         return this.topicRepository.findById(id).orElseThrow(()->new EntityNotFoundException("No topic found"));

@@ -1,5 +1,7 @@
 package org.oracleone.forohub.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.AnswerDTOs.AnswerDTO;
 import org.oracleone.forohub.persistence.DTO.AnswerDTOs.RegisterAnswerDTO;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/answers")
+@SecurityRequirement(name = "bearer-key")
 public class AnswerController {
 
     private final AnswerService answerService;
@@ -24,8 +27,10 @@ public class AnswerController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveAnswer(@RequestBody @Valid RegisterAnswerDTO registerAnswerDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.answerService.saveNewAnswer(registerAnswerDTO));
+    public ResponseEntity<?> saveAnswer(@RequestBody @Valid RegisterAnswerDTO registerAnswerDTO,
+                                        HttpSession session){
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.answerService
+                .saveNewAnswer(registerAnswerDTO, session));
     }
 
     @GetMapping("/{id}")

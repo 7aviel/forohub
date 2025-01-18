@@ -1,5 +1,6 @@
 package org.oracleone.forohub.service;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.oracleone.forohub.persistence.DTO.AnswerDTOs.AnswerDTO;
@@ -16,6 +17,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -36,13 +39,18 @@ public class AnswerService {
     }
 
     @Transactional
-    public Answer saveNewAnswer(RegisterAnswerDTO registerAnswerDTO){
+    public Answer saveNewAnswer(RegisterAnswerDTO registerAnswerDTO,
+                                HttpSession session){
         Answer newAnswer = new Answer();
         Optional.ofNullable(registerAnswerDTO.topicId())
                 .orElseThrow(() -> new IllegalArgumentException("Topic cannot be null. Create a new Topic in DB if it does not exist."));
         newAnswer.setTopic(this.topicService.getById(registerAnswerDTO.topicId()));
         newAnswer.setMessage(registerAnswerDTO.message());
-        newAnswer.setCreationDate(registerAnswerDTO.creationDate());
+        LocalDate sessionDate = (LocalDate) session.getAttribute("sessionDate");
+        if (sessionDate == null) {
+            throw new IllegalStateException("Session date not found");
+        }
+        newAnswer.setCreationDate(sessionDate);
         newAnswer.setSolution(registerAnswerDTO.solution());
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User author = this.userService.findByEmail(userDetails.getUsername());
